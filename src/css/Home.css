@@ -8,6 +8,7 @@
 .home h1 {
   font-size: 5rem;
   flex: 1 0 auto;
+  flex-wrap: wrap;
   text-align: right;
   margin: 0;
   padding: 0px 5vw;

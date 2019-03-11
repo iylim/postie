@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import API from '../API';
 import '../css/PostDetails.css'
 
 export default class PostDetails extends Component {
@@ -10,6 +11,18 @@ export default class PostDetails extends Component {
       comments: [],
       postedBy: {},
     }
+  }
+
+  componentDidMount = async () => {
+    const postResponse = await API.getPost(this.props.match.params.postId)  
+    const userResponse = await API.getUser(postResponse.data.userId)
+    const commentsResponse = await API.getPostComments(this.props.match.params.postId)
+    
+    this.setState({ 
+      post: postResponse.data,
+      postedBy: userResponse.data,
+      comments: commentsResponse.data 
+    })
   }
 
   render() {

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {BrowserRouter, Switch, Route, NavLink} from 'react-router-dom'
 import Home from './Home'
 import PostList from './PostList'
 import PostDetails from './PostDetails'
@@ -8,21 +9,26 @@ import '../css/App.css'
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header>
-          <nav>
-            <ul>
-              <li>Home</li>
-              <li>Posts</li>
-              <li>Users</li>
-            </ul>
-          </nav>
-        </header>
-        <Home />
-        <PostList />
-        <PostDetails />
-        <Users />
-      </div>
+      <BrowserRouter>
+        <div className="App">
+          <header>
+            <nav>
+              <ul>
+                <li><NavLink exact to="/">Home</NavLink></li>
+                <li><NavLink to="/posts">Posts</NavLink></li>
+                <li><NavLink to="/users">Users</NavLink></li>
+              </ul>
+            </nav>
+          </header>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/posts" component={PostList} />
+            <Route path="/posts/:postId" component={PostDetails} />
+            <Route path="/users" component={Users} />
+            <Route render={() => <h2>Not Found!</h2>} />
+          </Switch>
+        </div>
+      </BrowserRouter>
     )
   }
 }
