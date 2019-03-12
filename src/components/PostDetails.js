@@ -1,8 +1,13 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import API from '../API';
 import '../css/PostDetails.css'
 
 export default class PostDetails extends Component {
+  static propTypes = {
+    match: PropTypes.object,
+  }
+
   constructor(props) {
     super(props)
 
@@ -14,15 +19,33 @@ export default class PostDetails extends Component {
   }
 
   componentDidMount = async () => {
-    const postResponse = await API.getPost(this.props.match.params.postId)  
-    const userResponse = await API.getUser(postResponse.data.userId)
-    const commentsResponse = await API.getPostComments(this.props.match.params.postId)
-    
-    this.setState({ 
-      post: postResponse.data,
-      postedBy: userResponse.data,
-      comments: commentsResponse.data 
-    })
+    try {
+      const promise1 = this.getPostWithUser()
+      const promise2 = this.getComments()
+      await Promise.all([promise1, promise2])
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  getPostWithUser = async () => {
+    try {
+      const post = (await API.getPost(this.props.match.params.postId)).data  
+      this.setState({ post })
+      const postedBy = (await API.getUser(post.userId)).data
+      this.setState({ postedBy })
+    } catch (err) {
+      throw err
+    }
+  }
+
+  getComments = async () => {
+    try {
+      const commentsResponse = await API.getPostComments(this.props.match.params.postId)
+      this.setState({ comments: commentsResponse.data })
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   render() {
